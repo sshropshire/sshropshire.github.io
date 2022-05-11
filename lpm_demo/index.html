@@ -17,7 +17,11 @@
     <script>
 
         async function fetchClientToken() {
-            
+            const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
+            const result = await fetch(href);
+            console.log(result);
+            const json = await result.json();
+            return json.value;
         }
 
         function merchantAccountId() {
