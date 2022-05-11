@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOFORT Bank Demo</title>
+    <style>
+        
+    </style>
+  </head>
+  <body>
+    <button id="ideal-button">iDEAL</button>
+    <button id="sofort-button">SOFORT</button>
+
+    <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
+    <script>
+
+        function merchantAccountId() {
+            return "EUR_local";
+        }
+
+        async function createLocalPaymentInstance() {
+            const client = await braintree.client.create({ authorization: CLIENT_AUTHORIZATION });
+            const merchantAccountId = getMerchantAccountId();
+            return braintree.localPayment.create({ client, merchantAccountId });
+        }
+
+        async function startPayment() {
+            const localPaymentInstance = await createLocalPaymentInstance();
+            return localPaymentInstance.startPayment({
+                paymentType: 'insert_type',
+                amount: '10.76',
+                fallback: {
+                    url: 'https://sshropshire.github.io/local_payment_callback',
+                    buttonText: 'Complete Payment'
+                },
+                currencyCode: 'EUR',
+                givenName: 'Jane',
+                surname: 'Doe',
+                address: {
+                    countryCode: 'NL'
+                },
+                onPaymentStart: (data, start) => {
+                    console.log('ON PAYMENT START');
+                    console.log(data);
+                    start();
+                },
+            });
+        }
+
+        async function clickListener(e) {
+            try {
+                const payload = await startPayment();
+                console.log('PAYMENT START COMPLETE');
+                console.log(payload);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    </script>
+  </body>
+</html>
