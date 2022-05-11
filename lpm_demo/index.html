@@ -16,12 +16,17 @@
     <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
     <script>
 
+        async function fetchClientToken() {
+            
+        }
+
         function merchantAccountId() {
             return "EUR_local";
         }
 
         async function createLocalPaymentInstance() {
-            const client = await braintree.client.create({ authorization: CLIENT_AUTHORIZATION });
+            const authorization = await fetchClientToken();
+            const client = await braintree.client.create({ authorization });
             const merchantAccountId = getMerchantAccountId();
             return braintree.localPayment.create({ client, merchantAccountId });
         }
@@ -29,7 +34,7 @@
         async function startPayment() {
             const localPaymentInstance = await createLocalPaymentInstance();
             return localPaymentInstance.startPayment({
-                paymentType: 'insert_type',
+                paymentType: 'sofort',
                 amount: '10.76',
                 fallback: {
                     url: 'https://sshropshire.github.io/local_payment_callback',
@@ -39,7 +44,7 @@
                 givenName: 'Jane',
                 surname: 'Doe',
                 address: {
-                    countryCode: 'NL'
+                    countryCode: 'DE'
                 },
                 onPaymentStart: (data, start) => {
                     console.log('ON PAYMENT START');
@@ -50,6 +55,8 @@
         }
 
         async function clickListener(e) {
+            e.preventDefault();
+
             try {
                 const payload = await startPayment();
                 console.log('PAYMENT START COMPLETE');
@@ -58,6 +65,13 @@
                 console.log(e);
             }
         }
+
+        const idealButton = document.getElementById('ideal-button');
+        idealButton.addEventListener('click', clickListener);
+
+        const sofortButton = document.getElementById('sofort-button');
+        sofortButton.addEventListener('click', clickListener);
+
     </script>
   </body>
 </html>
