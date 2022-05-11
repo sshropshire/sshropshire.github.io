@@ -19,12 +19,11 @@
         async function fetchClientToken() {
             const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
             const result = await fetch(href);
-            console.log(result);
             const json = await result.json();
-            return json.value;
+            return json.client_token;
         }
 
-        function merchantAccountId() {
+        function getMerchantAccountId() {
             return "EUR_local";
         }
 
@@ -41,7 +40,7 @@
                 paymentType: 'sofort',
                 amount: '10.76',
                 fallback: {
-                    url: 'https://sshropshire.github.io/local_payment_callback',
+                    url: 'https://sshropshire.github.io/lpm_demo_callback',
                     buttonText: 'Complete Payment'
                 },
                 currencyCode: 'EUR',
