@@ -80,7 +80,7 @@
 
         async function initLocalPaymentInstance() {
             localPaymentInstance = await createLocalPaymentInstance();
-            document.findElementById('button-status').textContent = 'READY';
+            document.getElementById('button-status').textContent = 'READY';
         }
 
         const sofortButton = document.getElementById('sofort-button');
