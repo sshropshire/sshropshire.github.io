@@ -25,6 +25,7 @@
     <div class="container">
         <p>Status: <span id="button-status">INITIALIZING</span></p>
         <button id="sofort-button">SOFORT</button>
+        <p id="sofort-result"></p>
     </div>
 
     <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
@@ -73,8 +74,9 @@
                 const payload = await startPayment();
                 console.log('PAYMENT START COMPLETE');
                 console.log(payload);
+                document.getElementById('sofort-result').textContent = JSON.stringify(payload, null, 2);
             } catch (e) {
-                console.log(e);
+                document.getElementById('sofort-result').textContent = e.toString();
             }
         }
 
