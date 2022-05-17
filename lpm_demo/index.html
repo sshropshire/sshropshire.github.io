@@ -40,10 +40,7 @@
         async function createLocalPaymentInstance() {
             const authorization = await fetchClientToken();
             const client = await braintree.client.create({ authorization });
-            
-            const authJSON = JSON.parse(atob(authorization));
-            const { merchantId: merchantAccountId } = authJSON;
-            return braintree.localPayment.create({ client, merchantAccountId });
+            return braintree.localPayment.create({ client });
         }
 
         async function startPayment() {
