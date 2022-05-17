@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOFORT Bank Demo</title>
     <style>
-        
+
+        .container {
+            min-width: 700px;
+            margin: 0 auto;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+        }
     </style>
   </head>
   <body>
-    <button id="ideal-button">iDEAL</button>
-    <button id="sofort-button">SOFORT</button>
+    
+    <div class="container">
+        <button id="ideal-button">iDEAL</button>
+        <button id="sofort-button">SOFORT</button>
+    </div>
 
     <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
