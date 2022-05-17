@@ -23,12 +23,14 @@
   <body>
     
     <div class="container">
+        <p>Status: <span id="button-status">INITIALIZING</span></p>
         <button id="sofort-button">SOFORT</button>
     </div>
 
     <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
     <script>
+        let localPaymentInstance;
 
         async function fetchClientToken() {
             const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
@@ -44,7 +46,6 @@
         }
 
         async function startPayment() {
-            const localPaymentInstance = await createLocalPaymentInstance();
             return localPaymentInstance.startPayment({
                 paymentType: 'sofort',
                 amount: '10.76',
@@ -77,8 +78,15 @@
             }
         }
 
+        async function initLocalPaymentInstance() {
+            localPaymentInstance = await createLocalPaymentInstance();
+            document.findElementById('button-status').textContent = 'READY';
+        }
+
         const sofortButton = document.getElementById('sofort-button');
         sofortButton.addEventListener('click', clickListener);
+
+        initLocalPaymentInstance();
 
     </script>
   </body>
