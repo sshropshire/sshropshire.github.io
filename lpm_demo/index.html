@@ -37,10 +37,6 @@
             return json.client_token;
         }
 
-        function getMerchantAccountId() {
-            return "EUR_local";
-        }
-
         async function createLocalPaymentInstance() {
             const authorization = await fetchClientToken();
             const client = await braintree.client.create({ authorization });
@@ -60,11 +56,10 @@
                     buttonText: 'Complete Payment'
                 },
                 currencyCode: 'EUR',
+                countryCodeAlpha2: 'DE',
+                paymentTypeCountryCode: 'DE',
                 givenName: 'Jane',
                 surname: 'Doe',
-                address: {
-                    countryCode: 'DE'
-                },
                 onPaymentStart: (data, start) => {
                     console.log('ON PAYMENT START');
                     console.log(data);
