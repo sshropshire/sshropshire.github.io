@@ -34,10 +34,11 @@
         let payPalCheckout;
 
         async function fetchClientToken() {
-            const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
+            const href =
+                'https://sdk-sample-merchant-server.herokuapp.com/braintree/sandbox/client_tokens';
             const result = await fetch(href);
             const json = await result.json();
-            return json.client_token;
+            return json.value;
         }
 
         async function createPayPalCheckoutInstance() {
