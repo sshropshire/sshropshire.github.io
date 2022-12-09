@@ -30,7 +30,7 @@
     <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
     <script>
-        let payPalCheckoutInstance;
+        let payPalCheckout;
 
         async function fetchClientToken() {
             const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
@@ -39,20 +39,20 @@
             return json.client_token;
         }
 
-        async function createPayPalInstance() {
+        async function createPayPalCheckoutInstance() {
             const authorization = await fetchClientToken();
             const client = await braintree.client.create({ authorization });
-            return braintree.paypal.create({ client });
+            return braintree.paypalCheckout.create({ client });
         }
 
         async function initPayPalInstance() {
-            payPalCheckoutInstance = await createPayPalInstance();
-            await payPalCheckoutInstance.loadPayPalSDK({ currency: 'USD', intent: 'capture' });
+            payPalCheckout = await createPayPalCheckoutInstance();
+            await payPalCheckout.loadPayPalSDK({ currency: 'USD', intent: 'capture' });
 
             await paypal.Buttons({
                 fundingSource: paypal.FUNDING.PAYPAL,
                 createOrder: () => {
-                    return payPalCheckoutInstance.createPayment({
+                    return payPalCheckout.createPayment({
                         flow: 'checkout',
                         amount: 10.00,
                         currency: 'USD',
