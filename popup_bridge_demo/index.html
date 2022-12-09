@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Bridge Demo</title>
+    <style>
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+            padding: 15px 0 15px 0;
+            font-size: 1.25rem;
+        }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+        <p>Status: <span id="button-status">INITIALIZING</span></p>
+        <div id="paypal-button"></div>
+    </div>
+
+    <script src="https://js.braintreegateway.com/web/3.85.3/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.85.3/js/local-payment.min.js"></script>
+    <script>
+        let payPalCheckoutInstance;
+
+        async function fetchClientToken() {
+            const href = 'https://braintree-sample-merchant.herokuapp.com/client_token';
+            const result = await fetch(href);
+            const json = await result.json();
+            return json.client_token;
+        }
+
+        async function createPayPalInstance() {
+            const authorization = await fetchClientToken();
+            const client = await braintree.client.create({ authorization });
+            return braintree.paypal.create({ client });
+        }
+
+        async function initPayPalInstance() {
+            payPalCheckoutInstance = await createPayPalInstance();
+            await payPalCheckoutInstance.loadPayPalSDK({ currency: 'USD', intent: 'capture' });
+
+            await paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYPAL,
+                createOrder: () => {
+                    return payPalCheckoutInstance.createPayment({
+                        flow: 'checkout',
+                        amount: 10.00,
+                        currency: 'USD',
+                        intent: 'capture'
+                    });
+                },
+                onApprove: () => {
+
+                },
+                onCancel: data => {
+
+                },
+                onError: err => {
+
+                }
+            }).render('#paypal-button');
+
+            document.getElementById('button-status').textContent = 'READY';
+        }
+
+        initPayPalInstance();
+
+    </script>
+  </body>
+</html>
