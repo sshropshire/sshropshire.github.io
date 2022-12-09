@@ -36,7 +36,7 @@
         async function fetchClientToken() {
             const href =
                 'https://sdk-sample-merchant-server.herokuapp.com/braintree/sandbox/client_tokens';
-            const result = await fetch(href, { method: 'POST', mode: 'no-cors' });
+            const result = await fetch(href, { method: 'POST' });
             const json = await result.json();
             return json.value;
         }
