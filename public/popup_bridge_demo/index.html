@@ -38,7 +38,7 @@
         async function fetchClientToken() {
             let baseURL;
             if (isDev) {
-                baseURL = 'http://localhost:3000';
+                baseURL = 'http://10.0.2.2:3000';
             } else {
                 baseURL = 'https://sdk-sample-merchant-server.herokuapp.com';
             }
@@ -57,26 +57,26 @@
 
         async function initPayPalInstance() {
             payPalCheckout = await createPayPalCheckoutInstance();
-            await payPalCheckout.loadPayPalSDK({ currency: 'USD', intent: 'capture' });
+            payPalCheckout =
+                await payPalCheckout.loadPayPalSDK({ vault: true });
 
             await paypal.Buttons({
                 fundingSource: paypal.FUNDING.PAYPAL,
-                createOrder: () => {
+                createBillingAgreement: () => {
                     return payPalCheckout.createPayment({
-                        flow: 'checkout',
-                        amount: 10.00,
-                        currency: 'USD',
-                        intent: 'capture'
+                        flow: 'vault',
+                        billingAgreementDescription: 'Testing PayPal vault for Popup Bridge.',
+                        enableShippingAddress: false
                     });
                 },
-                onApprove: () => {
-
+                onApprove: (data, actions) => {
+                    console.log('inchea approve');
                 },
                 onCancel: data => {
-
+                    console.log('inchea cancel');
                 },
                 onError: err => {
-
+                    console.log(err);
                 }
             }).render('#paypal-button');
 
