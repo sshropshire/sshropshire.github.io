@@ -69,14 +69,15 @@
                         enableShippingAddress: false
                     });
                 },
-                onApprove: (data, actions) => {
-                    console.log('inchea approve');
+                onApprove: async (data, actions) => {
+                    const payload = await paypalCheckout.tokenizePayment(data);
+                    // log.innerText = JSON.stringify(payload, null, 2);
                 },
                 onCancel: data => {
-                    console.log('inchea cancel');
+                    // log.innerText = 'User cancelled';
                 },
                 onError: err => {
-                    console.log(err);
+                    // log.innerText = err.message;
                 }
             }).render('#paypal-button');
 
