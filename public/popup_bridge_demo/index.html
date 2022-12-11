@@ -33,9 +33,17 @@
     <script>
         let payPalCheckout;
 
+        const isDev = true;
+
         async function fetchClientToken() {
-            const href =
-                'https://sdk-sample-merchant-server.herokuapp.com/braintree/sandbox/client_tokens';
+            let baseURL;
+            if (isDev) {
+                baseURL = 'http://localhost:3000';
+            } else {
+                baseURL = 'https://sdk-sample-merchant-server.herokuapp.com';
+            }
+
+            const href = `${baseURL}/braintree/sandbox/client_tokens`;
             const result = await fetch(href, { method: 'POST' });
             const json = await result.json();
             return json.value;
