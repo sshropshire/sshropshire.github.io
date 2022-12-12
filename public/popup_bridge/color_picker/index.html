@@ -14,15 +14,17 @@
             font-size: 1.5rem;
         }
 
-        button {
+        a {
             color: #fff;
             display: block;
-            border: none;
             font-size: 1.25rem;
             font-weight: 600;
             margin: 16px 0;
             padding: 15px 0 15px 0;
             width: 100%;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
         }
 
         .container {
@@ -59,15 +61,17 @@
         <h1>Popup Bridge Color Picker</h1>
         <p>Select a color:</p>
         <ul>
-            <li><button id="red">RED</button></li>
-            <li><button id="green">GREEN</button></li>
-            <li><button id="blue">BLUE</button></li>
-            <li><button id="cancel">CANCEL</button></li>
+            <li><a id="red" href="#void">RED</a></li>
+            <li><a id="green" href="#void">GREEN</a></li>
+            <li><a id="blue" href="#void">BLUE</a></li>
+            <li><a id="cancel" href="#void">CANCEL</a></li>
         </ul>
     </div>
 
     <script>
-        function buttonClickListener(e) {
+        function anchorClickListener(e) {
+            e.preventDefault();
+
             const searchParams = new URLSearchParams(location.search);
             const cancelURL = searchParams.get('cancel_url');
             const successURL = searchParams.get('success_url');
@@ -80,9 +84,9 @@
             }
         }
 
-        const buttons = document.getElementsByTagName('button');
-        for (const b of buttons) {
-            b.addEventListener('click', buttonClickListener);
+        const anchors = document.getElementsByTagName('a');
+        for (const a of anchors) {
+            a.addEventListener('click', anchorClickListener);
         }
 
     </script>
