@@ -15,22 +15,23 @@
         }
 
         a {
-            display: block;
+            background: #169bd7;
+            border-radius: 5px;
             color: #fff;
-            background: #000;
+            display: block;
             font-size: 1.25rem;
             font-weight: 600;
             margin: 16px 0;
             padding: 15px 0 15px 0;
-            width: 100%;
             text-align: center;
             text-decoration: none;
-            border-radius: 5px;
+            width: 100%;
         }
 
         .container {
             max-width: 700px;
             margin: 0 auto;
+            padding: 0 8px;
         }
 
         ul {
@@ -43,7 +44,7 @@
   <body>
     
     <div class="container">
-        <h1>Popup Bridge Demo</h1>
+        <h1>Web App</h1>
         <ul>
             <li><a href="color_picker">LAUNCH COLOR PICKER</a></li>
         </ul>
@@ -76,7 +77,15 @@
                 a.addEventListener('click', anchorListener);
             }
 
-            popupBridge.onComplete = function (err, payload) {
+            popupBridge.browserSwitchInProgress = function () {
+                updateStatusText('BROWSER SWITCH STILL IN PROGRESS');
+            };
+
+            popupBridge.browserSwitchAbandoned = function () {
+                updateStatusText('BROWSER SWITCH ABANDONED');
+            };
+
+            function handleOnComplete(err, payload) {
                 let statusText;
                 if (payload) {
                     const { path, queryItems } = payload;
@@ -91,18 +100,25 @@
                     statusText = err.message;
                 }
 
-                console.log('we are complete');
-
                 updateStatusText(statusText);
-            };
+            }
 
-            popupBridge.browserSwitchInProgress = function () {
-                updateStatusText('BROWSER SWITCH STILL IN PROGRESS');
-            };
-
-            popupBridge.browserSwitchAbandoned = function () {
-                updateStatusText('BROWSER SWITCH ABANDONED');
-            };
+            popupBridge.onStateChange = function (state) {
+                switch (state.status) {
+                    case 'COMPLETE':
+                    case 'ERROR':
+                        const { error, payload } = state;
+                        handleOnComplete(error, payload);
+                        break;
+                    case 'UNKNOWN':
+                        const { isOriginalHostActivity } = state;
+                        updateStatusText(`UNKNOWN - isOriginalHostActivity -> ${isOriginalHostActivity}`);
+                        break;
+                    case 'IDLE':
+                        updateStatusText('IDLE');
+                        break;
+                }
+            }
         }
 
     </script>
