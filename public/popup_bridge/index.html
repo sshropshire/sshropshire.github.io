@@ -77,9 +77,9 @@
                     const { path, queryItems } = payload;
                     if (path.includes('success')) {
                         const { color } = queryItems;
-                        statusText = `${color} was selected`;
+                        statusText = `${color} was selected`.toUpperCase();
                     } else if (path.includes('cancel')) {
-                        statusText = 'User canceled';
+                        statusText = 'USER CANCELED';
                     }
 
                 } else if (err) {
