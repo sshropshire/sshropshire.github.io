@@ -5,7 +5,7 @@ const braintree = require('braintree');
 const port = process.env.PORT || 3000;
 
 const app = express();
-app.use(express.static('public'));
+app.use('/public', express.static('public'));
 
 const environment = braintree.Environment.Sandbox;
 const merchantId = process.env.BRAINTREE_MERCHANT_ID;
