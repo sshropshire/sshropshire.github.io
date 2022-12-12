@@ -47,12 +47,13 @@
         <ul>
             <li><a href="color_picker">LAUNCH COLOR PICKER</a></li>
         </ul>
+        <p>Status: <span id="button-status">READY</span></p>
     </div>
 
     <script>
-        function anchorListener(e) {
-            const { popupBridge } = window;
-            if (popupBridge) {
+        if (window.popupBridge) {
+
+            function anchorListener(e) {
                 e.preventDefault();
 
                 const href = e.currentTarget.href;
@@ -64,11 +65,30 @@
                 const redirectURL = `${href}/?success_url=${successURL}&cancel_url=${cancelURL}`;
                 popupBridge.open(redirectURL);
             }
-        }
 
-        const anchors = document.getElementsByTagName('a');
-        for (const a of anchors) {
-            a.addEventListener('click', anchorListener);
+            const anchors = document.getElementsByTagName('a');
+            for (const a of anchors) {
+                a.addEventListener('click', anchorListener);
+            }
+
+            popupBridge.onComplete = function (err, payload) {
+                let statusText;
+                if (payload) {
+                    const { path, queryItems } = payload;
+                    if (path.includes('success')) {
+                        const { color } = queryItems;
+                        statusText = `${color} was selected`;
+                    } else if (path.includes('cancel')) {
+                        statusText = 'User canceled';
+                    }
+
+                } else if (err) {
+                    statusText = err.message;
+                }
+
+                const statusEl = document.getElementById('button-status');
+                statusEl.innerText = statusText;
+            };
         }
 
     </script>
