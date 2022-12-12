@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Bridge Color Picker Demo</title>
+    <style>
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+            padding: 15px 0 15px 0;
+            font-size: 1.25rem;
+        }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+        <p>Status: <span id="button-status">INITIALIZING</span></p>
+        <div id="paypal-button"></div>
+    </div>
+
+    <script src="https://js.braintreegateway.com/web/3.88.4/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.88.4/js/paypal-checkout.min.js"></script>
+
+    <script>
+        let payPalCheckout;
+
+        const isDev = true;
+
+        async function fetchClientToken() {
+            let baseURL;
+            if (isDev) {
+                baseURL = 'http://10.0.2.2:3000';
+            } else {
+                baseURL = 'https://sdk-sample-merchant-server.herokuapp.com';
+            }
+
+            const href = `${baseURL}/braintree/sandbox/client_tokens`;
+            const result = await fetch(href, { method: 'POST' });
+            const json = await result.json();
+            return json.value;
+        }
+
+        async function createPayPalCheckoutInstance() {
+            const authorization = await fetchClientToken();
+            const client = await braintree.client.create({ authorization });
+            return braintree.paypalCheckout.create({ client });
+        }
+
+        async function initPayPalInstance() {
+            payPalCheckout = await createPayPalCheckoutInstance();
+            payPalCheckout =
+                await payPalCheckout.loadPayPalSDK({ vault: true });
+
+            await paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYPAL,
+                createBillingAgreement: () => {
+                    return payPalCheckout.createPayment({
+                        flow: 'vault',
+                        billingAgreementDescription: 'Testing PayPal vault for Popup Bridge.',
+                        enableShippingAddress: false
+                    });
+                },
+                onApprove: async (data, actions) => {
+                    const payload = await paypalCheckout.tokenizePayment(data);
+                    // log.innerText = JSON.stringify(payload, null, 2);
+                },
+                onCancel: data => {
+                    // log.innerText = 'User cancelled';
+                },
+                onError: err => {
+                    // log.innerText = err.message;
+                }
+            }).render('#paypal-button');
+
+            document.getElementById('button-status').textContent = 'READY';
+        }
+
+        initPayPalInstance();
+
+    </script>
+  </body>
+</html>
