@@ -66,6 +66,11 @@
                 popupBridge.open(redirectURL);
             }
 
+            function updateStatusText(text) {
+                const statusEl = document.getElementById('button-status');
+                statusEl.innerText = text;
+            }
+
             const anchors = document.getElementsByTagName('a');
             for (const a of anchors) {
                 a.addEventListener('click', anchorListener);
@@ -86,8 +91,17 @@
                     statusText = err.message;
                 }
 
-                const statusEl = document.getElementById('button-status');
-                statusEl.innerText = statusText;
+                console.log('we are complete');
+
+                updateStatusText(statusText);
+            };
+
+            popupBridge.browserSwitchInProgress = function () {
+                updateStatusText('BROWSER SWITCH STILL IN PROGRESS');
+            };
+
+            popupBridge.browserSwitchAbandoned = function () {
+                updateStatusText('BROWSER SWITCH ABANDONED');
             };
         }
 
